@@ -4,19 +4,17 @@ import java.util.*;
 
 public class TheNewlyBornLaw {
 
-    static class Stand {
+    static abstract class Stand {
 
-        protected Boolean expose(String name) {
-            return false;
-        }
-        
+        protected abstract Boolean expose(String name);
+
     }
 
     static class Josuke extends Stand {
 
         @Override
         protected Boolean expose(String name) {
-            return name.matches(name);
+            return name.toLowerCase().contains("k");
         }
     }
 
@@ -65,7 +63,7 @@ public class TheNewlyBornLaw {
             // System.out.print("Select your partner(1-5): ");
             String partnerChoice = sc.nextLine();
 
-            Stand stand = null;
+            Stand stand;
 
             switch (partnerChoice) {
                 case "Josuke" -> stand = new Josuke();
@@ -78,16 +76,35 @@ public class TheNewlyBornLaw {
                     return;
                 }
             }
+        Queue<String> queue = new LinkedList<>();
+        String[] input = sc.nextLine().split(" ");
+        for(String s : input){
+            queue.offer(s);
+        }
+        
+        Stack<String> stack = new Stack<>();
 
-            List<String> arrested = new ArrayList<>();
+        while(!queue.isEmpty()){
+            String n = queue.poll();
 
-            for (String n : names) {
-                if (stand.expose(n)) {
-                    arrested.add(n);
-                }
+            // skip partner
+            if(n.equalsIgnoreCase(partnerChoice)){
+                continue;
             }
 
-            System.out.println("Arrested: " + arrested);
+            if(stand.expose(n)){
+                stack.push(n);
+            }
         }
+
+        // convert ke list (biar output enak)
+        List<String> arrested = new ArrayList<>(stack);
+
+        if (!arrested.isEmpty()){
+            System.out.println(partnerChoice + " exposed someone!");
+        }
+
+        System.out.println("Arrested: " + arrested);
     }
+}
 }
